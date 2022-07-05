@@ -12,7 +12,7 @@ from tensorflow.keras.utils import normalize, to_categorical
 from tensorflow.keras.metrics import top_k_categorical_accuracy
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
-from helper import csv_db
+from helper import csv_db, img_resize
 from models import load_model
 from sklearn.utils import class_weight
 from collections import Counter
