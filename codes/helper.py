@@ -90,7 +90,7 @@ def csv_db(df, fname):
     else:
         df.to_csv(fname, mode='a', index=True, header=True)
         
-def img_resize(imgs, img_rows, img_cols, equalize=True):
+def img_resize(imgs, img_rows, img_cols, equalize=False):
 
     new_imgs = np.zeros([len(imgs), img_rows, img_cols])
     for mm, img in enumerate(imgs):
