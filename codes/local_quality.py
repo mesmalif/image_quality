@@ -19,20 +19,24 @@ from collections import Counter
 
 def main(model_name, run_note):
     batch_size = 32
+    img_rows = 224 
+    img_cols = 224
     X = np.load('../../classification/data/X_quality.npy')
     # X = denoise_img(X)
     # y = np.load('y_quality.npy')
+    X = img_resize(X, img_rows, img_cols)
+    X = np.repeat(X[..., np.newaxis], 3, -1)
     y = pd.read_csv("../../classification/data/y_remap.csv").values
     print(f'X.shape: {X.shape}, y.shape: {y.shape}')
 
     # Split dataset to train/validation/test
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, shuffle=True, random_state=1)
     
-    class_weights = class_weight.compute_class_weight('balanced',
-                                                 classes = np.unique(y),
-                                                 y = y.reshape(-1))
+#     class_weights = class_weight.compute_class_weight('balanced',
+#                                                  classes = np.unique(y),
+#                                                  y = y.reshape(-1))
     
-    print(f'class_weights: {class_weights}')
+#     print(f'class_weights: {class_weights}')
 
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.25, stratify=y_train, shuffle=True, random_state=1)
     print(f'X.min(): {X.min()}, X.max(): {X.max()}')
