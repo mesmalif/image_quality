@@ -17,6 +17,7 @@ import logging
 import sys
 from skimage.restoration import estimate_sigma,denoise_bilateral
 from scipy import ndimage as nd
+from skimage.exposure import equalize_adapthist
 
 def f1(y_true, y_pred):
     def recall(y_true, y_pred):
