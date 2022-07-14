@@ -21,12 +21,14 @@ def main(model_name, run_note):
     batch_size = 32
     img_rows = 224 
     img_cols = 224
-    X = np.load('../../classification/data/X_quality.npy')
+    # X = np.load('../../classification/data/X_quality.npy') # T2 images
+    X = np.load('../../classification/data/X_quality_adc.npy') # ADC images
     # X = denoise_img(X)
-    # y = np.load('y_quality.npy')
     X = img_resize(X, img_rows, img_cols)
     X = np.repeat(X[..., np.newaxis], 3, -1)
-    y = pd.read_csv("../../classification/data/y_remap.csv").values
+    # y = pd.read_csv("../../classification/data/y_remap.csv").values # T2 images
+    y = np.load('../../classification/data/y_quality_adc.npy') # ADC images
+    
     print(f'X.shape: {X.shape}, y.shape: {y.shape}')
 
     # Split dataset to train/validation/test
@@ -96,5 +98,5 @@ def main(model_name, run_note):
 if __name__=="__main__":
     model_names = {'a', 'ResNet50', 'InceptionV3', 'VGG16'}
     for model_name in model_names:
-        run_note = model_name + "_NoWeights_500"
+        run_note = model_name + "_adc_NoWeights_500"
         main(model_name, run_note)
