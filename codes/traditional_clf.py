@@ -50,10 +50,10 @@ def create_LBP_features(data):
     
     return Feature_data
 
-X = np.load('./data/X_quality.npy')
+X = np.load('../../classification/data/X_quality.npy')
 # X = X1[:100, :,:,:]
 # y = np.array('./data/y_quality.npy')
-y = pd.read_csv('./data/y_remap.csv').values
+y = pd.read_csv('../../classification/data/y_remap.csv').values
 # y = y1[:100, :]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.99, random_state=42, shuffle = True, stratify=y)
 
