@@ -55,7 +55,7 @@ X = np.load('../../classification/data/X_quality.npy')
 # y = np.array('./data/y_quality.npy')
 y = pd.read_csv('../../classification/data/y_remap.csv').values
 # y = y1[:100, :]
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.99, random_state=42, shuffle = True, stratify=y)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, shuffle = True, stratify=y)
 
 print("X_train shape: ", X_train.shape)
 print("y_train shape: ", y_train.shape)
