@@ -23,7 +23,7 @@ def read_from_folders():
     # csv_path = "/Users/neginpiran/OneDrive/Documents/ImageQuality/img_quality_adc.xlsx" # ADC path
     df = pd.read_excel(csv_path)
 
-    rootdir = '/Users/neginpiran/OneDrive/Documents/ImageQuality/Prostate Quality Unsegmented Cases'
+    rootdir = '../data/Prostate Quality Unsegmented Cases'
 
     img_list, label_list = [], []
     counter = 0
