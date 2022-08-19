@@ -1,4 +1,3 @@
-import nibabel as nbl
 import numpy as np
 import pandas as pd
 import pydicom as dicom
