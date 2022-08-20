@@ -100,7 +100,9 @@ def train_iqa(image_features):
     RF_model.fit(X_for_RF, y) #For sklearn no one hot encoding
     joblib.dump(RF_model, "../models/rf_patient.joblib")
     
-def test_model(X,y):
+    return RF_model
+    
+def test_model(X,y, RF_model):
     x_test = X.copy()
     y_test = y.copy()
     test_features = feature_extractor(x_test)
@@ -125,5 +127,5 @@ if __name__ == "__main__":
     #Extract features from training images
     image_features = feature_extractor(X)
     print(f'image_features.shape: {image_features.shape}')
-    train_iqa(image_features)
-    test_model(X,y)
+    RF_model = train_iqa(image_features)
+    test_model(X,y, RF_model)
