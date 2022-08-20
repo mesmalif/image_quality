@@ -31,8 +31,8 @@ csv_path = "../data/all_labels.xlsx" # T2 path
 df = pd.read_excel(csv_path)
 
 rootdir = '../data/iqa_images'
+patient_test_list = get_test_patient_ids()
 
-img_list, label_list = [], []
 counter = 0
 for subdir, dirs, files in os.walk(rootdir):
     for file in files:
