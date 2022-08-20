@@ -22,7 +22,7 @@ def read_from_folders():
     # csv_path = "/Users/neginpiran/OneDrive/Documents/ImageQuality/img_quality_adc.xlsx" # ADC path
     df = pd.read_excel(csv_path)
 
-    rootdir = '../data/Prostate Quality Unsegmented Cases'
+    rootdir = '../data/iqa_images'
 
     img_list, label_list = [], []
     counter = 0
@@ -36,11 +36,12 @@ def read_from_folders():
                 # print(f'------- {subdir}')
                 # print(f'------- {subdir}')
                 image_path = os.path.join(subdir, file)
-                start_index = subdir.lower().find('ai study id')+107
+                start_index = subdir.lower().find('al study id')+21
                 end_index = -2 # -2 for T2 and -3 for ADC
-                # print(f"subdir: {subdir}")
-                # print(f'start_index: {start_index}')
-                # print(f"ID: {subdir[start_index:end_index]}")
+                #print(f"subdir: {subdir}")
+                #print(f'end_index: {end_index}')
+                #print(f'start_index: {start_index}')
+                print(f"ID: {subdir[start_index:end_index]}")
                 ID = subdir[start_index:end_index]
                 if int(ID) not in patient_test_list:
                     # print(f'ID: {ID}')

@@ -73,7 +73,7 @@ def main(model_name, run_note):
             train_generator,
             steps_per_epoch = len(X_train)//batch_size,
             # class_weight = class_weight,
-            epochs = 500,
+            epochs = 1000,
            # class_weight = {0:10.37, 1:1.35, 2:.46},
             validation_data = (X_test, y_test)
     )
@@ -96,7 +96,8 @@ def main(model_name, run_note):
 
     
 if __name__=="__main__":
-    model_names = {'a', 'ResNet50', 'InceptionV3', 'VGG16'}
+    # model_names = {'a', 'ResNet50', 'InceptionV3', 'VGG16'}
+    model_names = {'a'}
     for model_name in model_names:
-        run_note = model_name + "_adc_NoWeights_500"
+        run_note = model_name + "_b32_adc_NoWeights_1000"
         main(model_name, run_note)
