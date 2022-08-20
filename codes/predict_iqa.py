@@ -56,6 +56,7 @@ for subdir, dirs, files in os.walk(rootdir):
                 print(f'dc_ar.shape: {dc_ar.shape}')
                 label = df[df['Study ID']==int(ID)]['label'].values[0]
                 print(f'label: {label}')
+                dc_ar = resize(dc_ar, (IMG_HEIGHT, IMG_WIDTH), mode='constant', preserve_range=True)
                 scaled_img = scaler.transform(dc_ar)
                 img_pred = rf_model.predict(scaled_img)
                 # save to csv
