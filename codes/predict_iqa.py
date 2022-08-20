@@ -24,8 +24,8 @@ IMG_HEIGHT = 256
 IMG_WIDTH = 256
 
 # load model and scaler
-scaler = joblib.load('./models/scaler_patient.joblib') 
-rf_model = joblib.load('./models/rf_patient.joblib') 
+scaler = joblib.load('../models/scaler_patient.joblib') 
+rf_model = joblib.load('../models/rf_patient.joblib') 
 csv_path = "../data/all_labels.xlsx" # T2 path
 # csv_path = "/Users/neginpiran/OneDrive/Documents/ImageQuality/img_quality_adc.xlsx" # ADC path
 df = pd.read_excel(csv_path)
