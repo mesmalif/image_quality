@@ -61,7 +61,13 @@ for subdir, dirs, files in os.walk(rootdir):
                 scaled_img = np.expand_dims(scaled_img, axis=0)
                 scaled_img = np.expand_dims(scaled_img, axis=3)
                 image_features = feature_extractor(scaled_img)
-                img_pred = rf_model.predict(image_features)
+                
+                n_features = image_features.shape[1]
+                image_features = np.expand_dims(image_features, axis=0)
+                X_for_RF = np.reshape(image_features, (X.shape[0], -1))  #Reshape to #images, features
+                print(f'X_for_RF.shape: {X_for_RF.shape}')
+
+                img_pred = rf_model.predict(X_for_RF)
                 # save to csv
                 case_list = {}
                 case_list['ID'] = ID
