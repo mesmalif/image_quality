@@ -64,7 +64,7 @@ for subdir, dirs, files in os.walk(rootdir):
                 
                 n_features = image_features.shape[1]
                 image_features = np.expand_dims(image_features, axis=0)
-                X_for_RF = np.reshape(image_features, (X.shape[0], -1))  #Reshape to #images, features
+                X_for_RF = np.reshape(image_features, (scaled_img.shape[0], -1))  #Reshape to #images, features
                 print(f'X_for_RF.shape: {X_for_RF.shape}')
 
                 img_pred = rf_model.predict(X_for_RF)
