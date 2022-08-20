@@ -74,5 +74,5 @@ for subdir, dirs, files in os.walk(rootdir):
                 case_list['label'] = label
                 case_list['prediction'] = img_pred
                 df_single = pd.DataFrame(case_list)
-                csv_db(df_single, f'patient_test_results.csv')
+                csv_db(df_single, f'../reports/patient_test_results.csv')
                 
