@@ -24,7 +24,7 @@ IMG_HEIGHT = 256
 IMG_WIDTH = 256
 
 # load model and scaler
-run_note = 'less data, train as test'
+run_note = 'more train data, train as test'
 scaler = joblib.load('../models/scaler_patient.joblib') 
 rf_model = joblib.load('../models/rf_patient.joblib') 
 csv_path = "../data/all_labels.xlsx" # T2 path
