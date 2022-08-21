@@ -24,9 +24,11 @@ IMG_HEIGHT = 256
 IMG_WIDTH = 256
 
 # load model and scaler
+run_note = 'train as test'
 scaler = joblib.load('../models/scaler_patient.joblib') 
 rf_model = joblib.load('../models/rf_patient.joblib') 
 csv_path = "../data/all_labels.xlsx" # T2 path
+patient_test_result_path = f'../reports/patient_test_results.csv'
 # csv_path = "/Users/neginpiran/OneDrive/Documents/ImageQuality/img_quality_adc.xlsx" # ADC path
 df = pd.read_excel(csv_path)
 
@@ -50,7 +52,7 @@ for subdir, dirs, files in os.walk(rootdir):
             # print(f'start_index: {start_index}')
             print(f"ID: {subdir[start_index:end_index]}")
             ID = subdir[start_index:end_index]
-            if int(ID) in patient_test_list:
+            if int(ID) not in patient_test_list:
                 # print(f'ID: {ID}')
                 dc_ar = dicom.dcmread(image_path).pixel_array
                 print(f'dc_ar.shape: {dc_ar.shape}')
@@ -74,5 +76,11 @@ for subdir, dirs, files in os.walk(rootdir):
                 case_list['label'] = label
                 case_list['prediction'] = img_pred
                 df_single = pd.DataFrame(case_list)
-                csv_db(df_single, f'../reports/patient_test_results.csv')
+                df_single['run_note'] = run_note
+                csv_db(df_single, patient_test_result_path)
                 
+df_test_all = pd.read_csv(patient_test_result_path)
+df_test = df_test_all.query('run_note==@run_note')
+result_df = pd.DataFrame(classification_report(df_test['label'], df_test['prediction'], output_dict=True))
+result_df['run_note'] = run_note
+csv_db(result_df, '../reports/classification_results.csv')
