@@ -117,6 +117,8 @@ def test_model(x_test,y_test, RF_model):
     #Print confusion matrix
     cm = confusion_matrix(y_test, test_prediction)
     print(f'confusion matrix: {cm}')
+    result_df = pd.DataFrame(classification_report(y_test, test_prediction, output_dict=True))
+    print(f'result_df: {result_df}')
 
 if __name__ == "__main__":
     

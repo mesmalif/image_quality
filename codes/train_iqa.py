@@ -16,7 +16,8 @@ import random
 def load_data():
     X = np.load('../data/X_quality_train.npy')
     y = np.load('../data/y_quality_train.npy')
-    print(f'X.shape: {X.shape}, y.shape: {y.shape}, X.max: {X.max()}')
+    # x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, shuffle = True)
+    # print(f'x_train.shape: {x_train.shape}, y_train.shape: {y_train.shape}, x_train.max: {x_train.max()}, x_test.max: {x_test.max()}')
     return X, y
 
 
@@ -24,12 +25,10 @@ def feature_extractor(dataset):
     x_train = dataset
     image_dataset = pd.DataFrame()
     for image in range(x_train.shape[0]):  #iterate through each file
-        if image in set(range(1,4000,100)):
-            print(image)
-        
+        if image in set(range(1,4000,1000)):
+            print(f'feature extraction for image: {image}/{len(dataset)}')
         df = pd.DataFrame()  #Temporary data frame to capture information for each loop.
-        #Reset dataframe to blank after each loop.
-        
+        #Reset dataframe to blank after each loop.   
         input_img = x_train[image, :,:,:]
         img = input_img
     ################################################################
@@ -81,12 +80,12 @@ def feature_extractor(dataset):
     return image_dataset
 
 
-def train_iqa(image_features):
+def train_iqa(image_features, y_train):
     #Reshape to a vector for Random Forest / SVM training
     n_features = image_features.shape[1]
     image_features = np.expand_dims(image_features, axis=0)
-    X_for_RF = np.reshape(image_features, (X.shape[0], -1))  #Reshape to #images, features
-    print(f'X_for_RF.shape: {X_for_RF.shape}')
+    X_for_RF = np.reshape(image_features, (len(y_train), -1))  #Reshape to #images, features
+    # print(f'X_for_RF.shape: {X_for_RF.shape}')
     
     #Define the classifier
     RF_model = RandomForestClassifier(n_estimators = 50, random_state = 42)
@@ -95,16 +94,14 @@ def train_iqa(image_features):
     #from sklearn import svm
     #SVM_model = svm.SVC(decision_function_shape='ovo')  #For multiclass classification
     #SVM_model.fit(X_for_RF, y_train)
-
+    print(f'before fit: X_for_RF.shape: {X_for_RF.shape}, y_train.shape: {y_train.shape}')
     # Fit the model on training data
-    RF_model.fit(X_for_RF, y) #For sklearn no one hot encoding
+    RF_model.fit(X_for_RF, y_train) #For sklearn no one hot encoding
     joblib.dump(RF_model, "../models/rf_patient.joblib")
     
     return RF_model
     
-def test_model(X,y, RF_model):
-    x_test = X.copy()
-    y_test = y.copy()
+def test_model(x_test,y_test, RF_model):
     test_features = feature_extractor(x_test)
     test_features = np.expand_dims(test_features, axis=0)
     test_for_RF = np.reshape(test_features, (x_test.shape[0], -1))
@@ -119,7 +116,9 @@ def test_model(X,y, RF_model):
 
     #Print confusion matrix
     cm = confusion_matrix(y_test, test_prediction)
-    print(f'confusion matrix: {cm}')
+    print(f'confusion matrix (pred on training dataset): {cm}')
+    result_df = pd.DataFrame(classification_report(y_test, test_prediction, output_dict=True))
+    print(f'result_df (pred on training dataset): {result_df}')
 
 if __name__ == "__main__":
     
@@ -127,5 +126,5 @@ if __name__ == "__main__":
     #Extract features from training images
     image_features = feature_extractor(X)
     print(f'image_features.shape: {image_features.shape}')
-    RF_model = train_iqa(image_features)
+    RF_model = train_iqa(image_features, y)
     test_model(X,y, RF_model)

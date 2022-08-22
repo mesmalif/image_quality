@@ -5,12 +5,11 @@ import cv2
 import os
 import seaborn as sns
 import pandas as pd
-from skimage.filters import sobel
-from sklearn.metrics import classification_report
+from skimage.filters import sobel 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 import joblib
-from sklearn.metrics import confusion_matrix, accuracy_score
+from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
 import random
 from helper import feature_extractor, csv_db
 import pydicom as dicom
