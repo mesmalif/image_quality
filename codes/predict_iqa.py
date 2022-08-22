@@ -51,7 +51,7 @@ for subdir, dirs, files in os.walk(rootdir):
             # print(f'start_index: {start_index}')
             print(f"ID: {subdir[start_index:end_index]}")
             ID = subdir[start_index:end_index]
-            if int(ID) not in patient_test_list:
+            if int(ID) in patient_test_list:
                 # print(f'ID: {ID}')
                 dc_ar = dicom.dcmread(image_path).pixel_array
                 print(f'dc_ar.shape: {dc_ar.shape}')
