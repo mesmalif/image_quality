@@ -84,7 +84,7 @@ def train_iqa(image_features, y_train):
     #Reshape to a vector for Random Forest / SVM training
     n_features = image_features.shape[1]
     image_features = np.expand_dims(image_features, axis=0)
-    X_for_RF = np.reshape(image_features, (image_features.shape[0], -1))  #Reshape to #images, features
+    X_for_RF = np.reshape(image_features, (len(y_train), -1))  #Reshape to #images, features
     # print(f'X_for_RF.shape: {X_for_RF.shape}')
     
     #Define the classifier
