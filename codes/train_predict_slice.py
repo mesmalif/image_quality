@@ -16,8 +16,8 @@ import random
 def load_data():
     X = np.load('../data/temp_x.npy')
     y = np.load('../data/temp_y.npy')
-    print(f'X.shape: {X.shape}, y.shape: {y.shape}, X.max: {X.max()}')
     x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, shuffle = True)
+    print(f'x_train.shape: {x_train.shape}, y_train.shape: {y_train.shape}, x_train.max: {x_train.max()}, x_test.max: {x_test.max()}')
     return x_train, x_test, y_train, y_test
 
 
@@ -25,12 +25,10 @@ def feature_extractor(dataset):
     x_train = dataset
     image_dataset = pd.DataFrame()
     for image in range(x_train.shape[0]):  #iterate through each file
-        if image in set(range(1,4000,100)):
-            print(image)
-        
+        if image in set(range(1,4000,1000)):
+            print(f'feature extraction for image: {image}/{len(dataset)}')
         df = pd.DataFrame()  #Temporary data frame to capture information for each loop.
-        #Reset dataframe to blank after each loop.
-        
+        #Reset dataframe to blank after each loop.   
         input_img = x_train[image, :,:,:]
         img = input_img
     ################################################################
@@ -86,8 +84,8 @@ def train_iqa(image_features, y):
     #Reshape to a vector for Random Forest / SVM training
     n_features = image_features.shape[1]
     image_features = np.expand_dims(image_features, axis=0)
-    X_for_RF = np.reshape(image_features, (X.shape[0], -1))  #Reshape to #images, features
-    print(f'X_for_RF.shape: {X_for_RF.shape}')
+    X_for_RF = np.reshape(image_features, (image_features.shape[0], -1))  #Reshape to #images, features
+    # print(f'X_for_RF.shape: {X_for_RF.shape}')
     
     #Define the classifier
     RF_model = RandomForestClassifier(n_estimators = 50, random_state = 42)
@@ -103,9 +101,7 @@ def train_iqa(image_features, y):
     
     return RF_model
     
-def test_model(X,y, RF_model):
-    x_test = X.copy()
-    y_test = y.copy()
+def test_model(x_test,y_test, RF_model):
     test_features = feature_extractor(x_test)
     test_features = np.expand_dims(test_features, axis=0)
     test_for_RF = np.reshape(test_features, (x_test.shape[0], -1))
