@@ -80,7 +80,7 @@ def feature_extractor(dataset):
     return image_dataset
 
 
-def train_iqa(image_features, y):
+def train_iqa(image_features, y_train):
     #Reshape to a vector for Random Forest / SVM training
     n_features = image_features.shape[1]
     image_features = np.expand_dims(image_features, axis=0)
@@ -94,9 +94,9 @@ def train_iqa(image_features, y):
     #from sklearn import svm
     #SVM_model = svm.SVC(decision_function_shape='ovo')  #For multiclass classification
     #SVM_model.fit(X_for_RF, y_train)
-
+    print(f'before fit: X_for_RF.shape: {X_for_RF.shape}, y_train.shape: {y_train.shape}')
     # Fit the model on training data
-    RF_model.fit(X_for_RF, y) #For sklearn no one hot encoding
+    RF_model.fit(X_for_RF, y_train) #For sklearn no one hot encoding
     joblib.dump(RF_model, "../models/rf_patient.joblib")
     
     return RF_model
