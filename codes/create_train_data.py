@@ -53,7 +53,7 @@ def read_from_folders():
                     
     return img_list, label_list, id_list
 
-def resize_scale_save(img_list, label_list):
+def resize_scale_save(img_list, label_list, id_list):
     # resize all images
     X = np.zeros((len(img_list), IMG_HEIGHT, IMG_WIDTH))
     y = np.zeros((len(img_list), 2))
