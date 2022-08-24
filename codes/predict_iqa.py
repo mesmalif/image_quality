@@ -23,7 +23,7 @@ IMG_HEIGHT = 256
 IMG_WIDTH = 256
 
 # load model and scaler
-run_note = 'more train data, train as test'
+run_note = 'dependency train then predict'
 scaler = joblib.load('../models/scaler_patient.joblib') 
 rf_model = joblib.load('../models/rf_patient.joblib') 
 csv_path = "../data/all_labels.xlsx" # T2 path
@@ -49,12 +49,12 @@ for subdir, dirs, files in os.walk(rootdir):
             end_index = -2 # -2 for T2 and -3 for ADC
             # print(f"subdir: {subdir}")
             # print(f'start_index: {start_index}')
-            print(f"ID: {subdir[start_index:end_index]}")
+            # print(f"ID: {subdir[start_index:end_index]}")
             ID = subdir[start_index:end_index]
             if int(ID) in patient_test_list:
                 # print(f'ID: {ID}')
                 dc_ar = dicom.dcmread(image_path).pixel_array
-                print(f'dc_ar.shape: {dc_ar.shape}')
+               # print(f'dc_ar.shape: {dc_ar.shape}')
                 label = df[df['Study ID']==int(ID)]['label'].values[0]
                 print(f'label: {label}')
                 dc_ar = resize(dc_ar, (IMG_HEIGHT, IMG_WIDTH), mode='constant', preserve_range=True)
@@ -66,7 +66,7 @@ for subdir, dirs, files in os.walk(rootdir):
                 n_features = image_features.shape[1]
                 image_features = np.expand_dims(image_features, axis=0)
                 X_for_RF = np.reshape(image_features, (scaled_img.shape[0], -1))  #Reshape to #images, features
-                print(f'X_for_RF.shape: {X_for_RF.shape}')
+                #print(f'X_for_RF.shape: {X_for_RF.shape}')
 
                 img_pred = rf_model.predict(X_for_RF)
                 # save to csv
@@ -83,3 +83,5 @@ df_test = df_test_all.query('run_note==@run_note')
 result_df = pd.DataFrame(classification_report(df_test['label'], df_test['prediction'], output_dict=True))
 result_df['run_note'] = run_note
 csv_db(result_df, '../reports/classification_results.csv')
+cm = confusion_matrix(df_test['label'], df_test['prediction'])
+print(f'confusion_matrix: {cm}')

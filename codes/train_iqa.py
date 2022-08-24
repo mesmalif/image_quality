@@ -88,7 +88,7 @@ def train_iqa(image_features, y_train):
     # print(f'X_for_RF.shape: {X_for_RF.shape}')
     
     #Define the classifier
-    RF_model = RandomForestClassifier(n_estimators = 50, random_state = 42)
+    RF_model = RandomForestClassifier(n_estimators = 250, random_state = 42)
 
     #Can also use SVM but RF is faster and may be more accurate.
     #from sklearn import svm
@@ -127,4 +127,4 @@ if __name__ == "__main__":
     image_features = feature_extractor(X)
     print(f'image_features.shape: {image_features.shape}')
     RF_model = train_iqa(image_features, y)
-    test_model(X,y, RF_model)
+    #test_model(X,y, RF_model)
