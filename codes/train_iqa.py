@@ -12,6 +12,7 @@ from sklearn.ensemble import RandomForestClassifier
 import joblib
 from sklearn.metrics import confusion_matrix, accuracy_score
 import random
+from helper import feature_extractor, csv_db
 
 def load_data():
     x_train = np.load('../data/X_quality_train.npy')
@@ -21,65 +22,6 @@ def load_data():
     # x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, shuffle = True)
     # print(f'x_train.shape: {x_train.shape}, y_train.shape: {y_train.shape}, x_train.max: {x_train.max()}, x_test.max: {x_test.max()}')
     return x_train, x_test, y_train, y_test
-
-
-def feature_extractor(dataset):
-    x_train = dataset
-    image_dataset = pd.DataFrame()
-    for image in range(x_train.shape[0]):  #iterate through each file
-        if image in set(range(1,4000,1000)):
-            print(f'feature extraction for image: {image}/{len(dataset)}')
-        df = pd.DataFrame()  #Temporary data frame to capture information for each loop.
-        #Reset dataframe to blank after each loop.   
-        input_img = x_train[image, :,:,:]
-        img = input_img
-    ################################################################
-    #START ADDING DATA TO THE DATAFRAME
-    #Add feature extractors, e.g. edge detection, smoothing, etc. 
-            
-         # FEATURE 1 - Pixel values
-         
-        #Add pixel values to the data frame
-        pixel_values = img.reshape(-1)
-        df['Pixel_Value'] = pixel_values   #Pixel value itself as a feature
-        #df['Image_Name'] = image   #Capture image name as we read multiple images
-        
-        # FEATURE 2 - Bunch of Gabor filter responses
-        
-                #Generate Gabor features
-        num = 1  #To count numbers up in order to give Gabor features a lable in the data frame
-        kernels = []
-        for theta in range(2):   #Define number of thetas
-            theta = theta / 4. * np.pi
-            for sigma in (1, 3):  #Sigma with 1 and 3
-            #sigma = 1
-            
-                lamda = np.pi/4
-                gamma = 0.5
-                gabor_label = 'Gabor' + str(num)  #Label Gabor columns as Gabor1, Gabor2, etc.
-    #                print(gabor_label)
-                ksize=9
-                kernel = cv2.getGaborKernel((ksize, ksize), sigma, theta, lamda, gamma, 0, ktype=cv2.CV_32F)    
-                kernels.append(kernel)
-                #Now filter the image and add values to a new column 
-                fimg = cv2.filter2D(img, cv2.CV_8UC3, kernel)
-                filtered_img = fimg.reshape(-1)
-                df[gabor_label] = filtered_img  #Labels columns as Gabor1, Gabor2, etc.
-                # print(gabor_label, ': theta=', theta, ': sigma=', sigma, ': lamda=', lamda, ': gamma=', gamma)
-                num += 1  #Increment for gabor column label
-                
-         
-        # # FEATURE 3 Sobel
-        # edge_sobel = sobel(img)
-        # edge_sobel1 = edge_sobel.reshape(-1)
-        # df['Sobel'] = edge_sobel1
-       
-        #Add more filters as needed
-        
-        #Append features from current image to the dataset
-        image_dataset = image_dataset.append(df)
-        
-    return image_dataset
 
 
 def train_iqa(image_features, y):
@@ -105,6 +47,7 @@ def train_iqa(image_features, y):
     return RF_model
     
 def test_model(x_test, y, RF_model):
+    patient_test_result_path = f'../reports/patient_test_results.csv'
     y_test = y[:,0].copy()
     y_label = y[:,1].copy()
     test_features = feature_extractor(x_test)
@@ -115,16 +58,18 @@ def test_model(x_test, y, RF_model):
     test_prediction = RF_model.predict(test_for_RF)
     #Inverse le transform to get original label back. 
     # test_prediction = le.inverse_transform(test_prediction)
-    print(f'test_prediction.shape:{test_prediction.shape}')
-    #Print overall accuracy
-    print ("Accuracy = ", accuracy_score(y_test, test_prediction))
 
     #Print confusion matrix
     cm = confusion_matrix(y_test, test_prediction)
     print(f'confusion matrix (pred on training dataset): {cm}')
-    result_df = pd.DataFrame(classification_report(y_test, test_prediction, output_dict=True))
-    result_df.loc[:, 'label'] = y_label
-    print(f'result_df (pred on training dataset): {result_df}')
+    clf_report = pd.DataFrame(classification_report(y_test, test_prediction, output_dict=True))
+    print(f'clf_report: {clf_report}')
+    result_df = pd.DataFrame()
+    result_df.loc[:, 'y_test'] = y_test.copy()
+    result_df.loc[:, 'test_prediction'] = test_prediction.copy()
+    result_df.loc[:, 'label'] = y_label.copy()
+    
+    csv_db(result_df, patient_test_result_path)
 
 if __name__ == "__main__":
     
