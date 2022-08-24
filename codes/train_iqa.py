@@ -61,7 +61,7 @@ def test_model(x_test, y, RF_model):
 
     #Print confusion matrix
     cm = confusion_matrix(y_test, test_prediction)
-    print(f'confusion matrix (pred on training dataset): {cm}')
+    print(f'confusion matrix (pred on test dataset): {cm}')
     clf_report = pd.DataFrame(classification_report(y_test, test_prediction, output_dict=True))
     print(f'clf_report: {clf_report}')
     result_df = pd.DataFrame()
