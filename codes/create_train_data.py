@@ -51,7 +51,7 @@ def read_from_folders():
                     label_list.append(label)
                     id_list.append(int(ID))
                     
-    return img_list, label_list
+    return img_list, label_list, id_list
 
 def resize_scale_save(img_list, label_list):
     # resize all images
@@ -79,6 +79,6 @@ def resize_scale_save(img_list, label_list):
     np.save('../data/y_quality_train', y_final)
 
 if __name__ == "__main__":
-    img_list, label_list = read_from_folders()
-    resize_scale_save(img_list, label_list)
+    img_list, label_list, id_list = read_from_folders()
+    resize_scale_save(img_list, label_list, id_list)
     
