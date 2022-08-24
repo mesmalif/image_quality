@@ -71,6 +71,7 @@ def resize_scale_save(img_list, label_list, id_list):
     joblib.dump(scaler, "../models/scaler_patient.joblib")
     X_final = np.expand_dims(X_scld, axis=3)
     # y_final = np.expand_dims(y, axis=1)
+    y_final = y.copy()
 
     print(f'X_final.shape: {X_final.shape}')
     print(f'y_final.shape: {y_final.shape}')
