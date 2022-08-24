@@ -24,7 +24,7 @@ def read_from_folders():
 
     rootdir = '../data/iqa_images'
 
-    img_list, label_list = [], []
+    img_list, label_list, id_list = [], [], []
     counter = 0
     for subdir, dirs, files in os.walk(rootdir):
         for file in files:
@@ -49,17 +49,19 @@ def read_from_folders():
                     label = df[df['Study ID']==int(ID)]['label'].values[0]
                     img_list.append(dc_ar)
                     label_list.append(label)
+                    id_list.append(int(ID))
                     
     return img_list, label_list
 
 def resize_scale_save(img_list, label_list):
     # resize all images
     X = np.zeros((len(img_list), IMG_HEIGHT, IMG_WIDTH))
-    y = np.zeros(len(img_list))
+    y = np.zeros(len(img_list), 2)
     for i in range(len(img_list)):
         img = resize(img_list[i], (IMG_HEIGHT, IMG_WIDTH), mode='constant', preserve_range=True)
         X[i,:,:] = img
-        y[i] = label_list[i]
+        y[i,0] = label_list[i]
+        y[i,1] = id_list[i]
 
     scaler = MinMaxScaler()
 
@@ -68,7 +70,7 @@ def resize_scale_save(img_list, label_list):
     X_scld = scaler.fit_transform(X.reshape(-1, X.shape[-1])).reshape(X.shape)
     joblib.dump(scaler, "../models/scaler_patient.joblib")
     X_final = np.expand_dims(X_scld, axis=3)
-    y_final = np.expand_dims(y, axis=1)
+    # y_final = np.expand_dims(y, axis=1)
 
     print(f'X_final.shape: {X_final.shape}')
     print(f'y_final.shape: {y_final.shape}')
