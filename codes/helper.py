@@ -445,10 +445,10 @@ def feature_extractor(dataset):
                 num += 1  #Increment for gabor column label
                 
          
-        # # FEATURE 3 Sobel
-        # edge_sobel = sobel(img)
-        # edge_sobel1 = edge_sobel.reshape(-1)
-        # df['Sobel'] = edge_sobel1
+        # FEATURE 3 Sobel
+        edge_sobel = sobel(img)
+        edge_sobel1 = edge_sobel.reshape(-1)
+        df['Sobel'] = edge_sobel1
        
         #Add more filters as needed
         
