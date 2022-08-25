@@ -5,7 +5,6 @@ import cv2
 import os
 import seaborn as sns
 import pandas as pd
-from skimage.filters import sobel
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
