@@ -369,9 +369,9 @@ def feature_extractor(dataset):
                 #Generate Gabor features
         num = 1  #To count numbers up in order to give Gabor features a lable in the data frame
         kernels = []
-        for theta in range(2):   #Define number of thetas
+        for theta in range(3):   #Define number of thetas
             theta = theta / 4. * np.pi
-            for sigma in (1, 3):  #Sigma with 1 and 3
+            for sigma in (1, 2, 3):  #Sigma with 1 and 3
             #sigma = 1
             
                 lamda = np.pi/4
