@@ -13,6 +13,7 @@ import joblib
 from sklearn.metrics import confusion_matrix, accuracy_score
 import random
 from helper import feature_extractor, csv_db
+from sklearn import svm
 
 def load_data():
     x_train = np.load('../data/X_quality_train.npy')
@@ -24,7 +25,7 @@ def load_data():
     return x_train, x_test, y_train, y_test
 
 
-def train_iqa(image_features, y):
+def train_iqa(image_features, y, method='random_forest'):
     y_train = y[:,0].copy()
     #Reshape to a vector for Random Forest / SVM training
     # n_features = image_features.shape[1]
@@ -33,20 +34,19 @@ def train_iqa(image_features, y):
     # print(f'X_for_RF.shape: {X_for_RF.shape}')
     
     #Define the classifier
-    RF_model = RandomForestClassifier(n_estimators = 250, random_state = 42)
+    if method=='random_forest':
+        model = RandomForestClassifier(n_estimators = 250, random_state = 42)
+    elif method=='svm':
+        model = svm.SVC(decision_function_shape='ovo')  #For multiclass classification
 
-    #Can also use SVM but RF is faster and may be more accurate.
-    #from sklearn import svm
-    #SVM_model = svm.SVC(decision_function_shape='ovo')  #For multiclass classification
-    #SVM_model.fit(X_for_RF, y_train)
     print(f'before fit: X_for_RF.shape: {X_for_RF.shape}, y_train.shape: {y_train.shape}')
     # Fit the model on training data
-    RF_model.fit(X_for_RF, y_train) #For sklearn no one hot encoding
-    joblib.dump(RF_model, "../models/rf_patient.joblib")
+    model.fit(X_for_RF, y_train) #For sklearn no one hot encoding
+    joblib.dump(model, "../models/patient_model.joblib")
     
-    return RF_model
+    return model
     
-def test_model(x_test, y, RF_model):
+def test_model(x_test, y, model):
     patient_test_result_path = f'../reports/patient_test_results.csv'
     y_test = y[:,0].copy()
     y_label = y[:,1].copy()
@@ -55,7 +55,7 @@ def test_model(x_test, y, RF_model):
     test_for_RF = np.reshape(test_features, (x_test.shape[0], -1))
 
     #Predict on test
-    test_prediction = RF_model.predict(test_for_RF)
+    test_prediction = model.predict(test_for_RF)
     #Inverse le transform to get original label back. 
     # test_prediction = le.inverse_transform(test_prediction)
 
@@ -77,5 +77,5 @@ if __name__ == "__main__":
     #Extract features from training images
     image_features = feature_extractor(x_train)
     print(f'image_features.shape: {image_features.shape}')
-    rf_model = train_iqa(image_features, y_train)
-    test_model(x_test, y_test, rf_model)
+    model = train_iqa(image_features, y_train, 'svm')
+    test_model(x_test, y_test, model)
