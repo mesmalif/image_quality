@@ -20,6 +20,7 @@ from skimage.restoration import estimate_sigma,denoise_bilateral
 from scipy import ndimage as nd
 from skimage.exposure import equalize_adapthist
 from skimage.filters import sobel
+from sklearn.metrics import f1_score, classification_report
 
 def f1(y_true, y_pred):
     def recall(y_true, y_pred):
@@ -399,3 +400,21 @@ def feature_extractor(dataset):
         image_dataset = image_dataset.append(df)
         
     return image_dataset
+
+
+def patient_results(file_path):
+    df_vote = pd.DataFrame()
+    df_results = pd.read_csv(file_path)
+    last_ts = df_results['save_date'].iloc[-1]
+    df_fltd = df_results.query('save_date==@last_ts')
+    df_vote = pd.DataFrame()
+    for patient_id in df_fltd['patient_id'].unique():
+        df_id = df_fltd.query('patient_id==@patient_id')
+        vote = df_id.test_prediction.value_counts().index[0]
+        y_test = df_id.y_test.values[0]
+        df_vote.loc[len(df_vote.index),['patient_id','vote','g_truth']] = [patient_id, vote, y_test]
+
+        
+    clf_report = pd.DataFrame(classification_report(df_vote['g_truth'], df_vote['vote'], output_dict=True))
+    print(f'-----> clf_report: {clf_report}')
+    return clf_report

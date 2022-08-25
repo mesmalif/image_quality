@@ -11,7 +11,7 @@ from sklearn.ensemble import RandomForestClassifier
 import joblib
 from sklearn.metrics import confusion_matrix, accuracy_score
 import random
-from helper import feature_extractor, csv_db
+from helper import feature_extractor, csv_db, patient_results
 from sklearn import svm
 
 is_binary = True
@@ -49,8 +49,9 @@ def train_iqa(image_features, y, method='random_forest'):
     
     return model
     
-def test_model(x_test, y, model):
+def test_model(x_test, y, model, run_note):
     patient_test_result_path = f'../reports/patient_test_results.csv'
+    patient_vote_result_path = f'../reports/patient_vote_results.csv'
     y_test = y[:,0].copy()
     y_label = y[:,1].copy()
     test_features = feature_extractor(x_test)
@@ -70,15 +71,20 @@ def test_model(x_test, y, model):
     result_df = pd.DataFrame()
     result_df.loc[:, 'y_test'] = y_test.copy()
     result_df.loc[:, 'test_prediction'] = test_prediction.copy()
-    result_df.loc[:, 'label'] = y_label.copy()
+    result_df.loc[:, 'patient_id'] = y_label.copy()
+    result_df.loc[:, 'run_note'] = run_note
     
     csv_db(result_df, patient_test_result_path)
+    
+    patient_vote_results_df = patient_results(patient_test_result_path)
+    patient_vote_results_df.loc[:, 'run_note'] = run_note
+    csv_db(patient_vote_results_df, patient_vote_result_path)
 
 if __name__ == "__main__":
-    
+    run_note = "sobel_binary_class"
     x_train, x_test, y_train, y_test = load_data()
     #Extract features from training images
     image_features = feature_extractor(x_train)
     print(f'image_features.shape: {image_features.shape}')
     model = train_iqa(image_features, y_train, 'svm')
-    test_model(x_test, y_test, model)
+    test_model(x_test, y_test, model, run_note)
