@@ -14,11 +14,15 @@ import random
 from helper import feature_extractor, csv_db
 from sklearn import svm
 
+is_binary = True
+
 def load_data():
     x_train = np.load('../data/X_quality_train.npy')
     y_train = np.load('../data/y_quality_train.npy')
+    y_train[y_train==0] = 1 # replace class 0 with 1
     x_test = np.load('../data/X_quality_test.npy')
     y_test = np.load('../data/y_quality_test.npy')
+    y_test[y_test==0] = 1  # replace class 0 with 1
     # x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, shuffle = True)
     # print(f'x_train.shape: {x_train.shape}, y_train.shape: {y_train.shape}, x_train.max: {x_train.max()}, x_test.max: {x_test.max()}')
     return x_train, x_test, y_train, y_test
