@@ -416,5 +416,5 @@ def patient_results(file_path):
 
         
     clf_report = pd.DataFrame(classification_report(df_vote['g_truth'], df_vote['vote'], output_dict=True))
-    print(f'-----> clf_report: {clf_report}')
+    print(f'patient-based clf report: {clf_report}')
     return clf_report

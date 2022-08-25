@@ -50,7 +50,7 @@ def train_iqa(image_features, y, method='random_forest'):
     return model
     
 def test_model(x_test, y, model, run_note):
-    patient_test_result_path = f'../reports/patient_test_results.csv'
+    patient_test_result_path = f'../reports/patient_slice_results.csv'
     patient_vote_result_path = f'../reports/patient_vote_results.csv'
     y_test = y[:,0].copy()
     y_label = y[:,1].copy()
@@ -67,7 +67,7 @@ def test_model(x_test, y, model, run_note):
     cm = confusion_matrix(y_test, test_prediction)
     print(f'confusion matrix (pred on test dataset): {cm}')
     clf_report = pd.DataFrame(classification_report(y_test, test_prediction, output_dict=True))
-    print(f'clf_report: {clf_report}')
+    print(f'Slice-Based clf report: {clf_report}')
     result_df = pd.DataFrame()
     result_df.loc[:, 'y_test'] = y_test.copy()
     result_df.loc[:, 'test_prediction'] = test_prediction.copy()
