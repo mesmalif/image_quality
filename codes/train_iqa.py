@@ -81,7 +81,7 @@ def test_model(x_test, y, model, run_note):
     csv_db(patient_vote_results_df, patient_vote_result_path)
 
 if __name__ == "__main__":
-    run_note = "moreGabor_sobel_binary_class"
+    run_note = "binary_class"
     x_train, x_test, y_train, y_test = load_data()
     #Extract features from training images
     image_features = feature_extractor(x_train)
