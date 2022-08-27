@@ -91,7 +91,7 @@ def test_model(x_test, y, model, run_note):
     
     patient_vote_results_df = patient_results(patient_test_result_path)
     patient_vote_results_df.loc[:, 'run_note'] = run_note
-    csv_db(patient_vote_results_df, patient_vote_result_path)
+    # csv_db(patient_vote_results_df, patient_vote_result_path)
 
 if __name__ == "__main__":
     run_note = "binary_class"
