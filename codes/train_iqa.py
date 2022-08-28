@@ -53,7 +53,8 @@ def train_iqa(image_features, y, method='random_forest'):
     if method=='random_forest':
         model = RandomForestClassifier(n_estimators = 50)
     elif method=='svm':
-        model = svm.SVC(decision_function_shape='ovo')  #For multiclass classification
+        model = svm.SVC()  #decision_function_shape='ovo' For multiclass classification
+    print(f'----- Training with: {model}')
 
     # print(f'before fit: X_for_RF.shape: {X_for_RF.shape}, y_train.shape: {y_train.shape}')
     # Fit the model on training data
@@ -94,11 +95,12 @@ def test_model(x_test, y, model, run_note):
     # csv_db(patient_vote_results_df, patient_vote_result_path)
 
 if __name__ == "__main__":
-    run_note = "binary_class"
+    method = 'svm'
+    run_note = f"binary_{method}"
     x_train, x_test, y_train, y_test = load_data()
     #Extract features from training images
     image_features = feature_extractor(x_train)
     for i in range(10):
         print(f'------> i: {i} image_features.sum: {image_features.sum()}')
-        model = train_iqa(image_features, y_train, 'svm')
+        model = train_iqa(image_features, y_train, method)
         test_model(x_test, y_test, model, f'i_{run_note}')
