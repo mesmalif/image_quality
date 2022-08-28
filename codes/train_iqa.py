@@ -64,8 +64,12 @@ def train_iqa(image_features, y, method='random_forest'):
     return model
     
 def test_model(x_test, y, model, run_note):
-    patient_test_result_path = f'../reports/patient_slice_results.csv'
-    patient_vote_result_path = f'../reports/patient_vote_results.csv'
+#     patient_test_result_path = f'../reports/patient_slice_results.csv'
+#     patient_vote_result_path = f'../reports/patient_vote_results.csv'
+    
+    long_results_path = f'../reports/long_results.csv'
+    clf_report_path = f'../reports/classification_report.csv'
+    
     y_test = y[:,0].copy()
     y_label = y[:,1].copy()
     test_features = feature_extractor(x_test)
@@ -82,17 +86,21 @@ def test_model(x_test, y, model, run_note):
     print(f'confusion matrix (pred on test dataset): {cm}')
     clf_report = pd.DataFrame(classification_report(y_test, test_prediction, output_dict=True))
     print(f'Slice-Based clf report: {clf_report}')
+    clf_report.loc[:, 'run_note'] = run_note
+    clf_report.loc[:, 'sliceORpatient'] = 'slice'
+    csv_db(clf_report, clf_report_path)
+    
     result_df = pd.DataFrame()
     result_df.loc[:, 'y_test'] = y_test.copy()
     result_df.loc[:, 'test_prediction'] = test_prediction.copy()
     result_df.loc[:, 'patient_id'] = y_label.copy()
     result_df.loc[:, 'run_note'] = run_note
+    csv_db(result_df, long_results_path)
     
-    csv_db(result_df, patient_test_result_path)
-    
-    patient_vote_results_df = patient_results(patient_test_result_path)
+    patient_vote_results_df = patient_results(long_results_path)
     patient_vote_results_df.loc[:, 'run_note'] = run_note
-    # csv_db(patient_vote_results_df, patient_vote_result_path)
+    patient_vote_results_df.loc[:, 'sliceORpatient'] = 'patient'
+    csv_db(patient_vote_results_df, clf_report_path)
 
 if __name__ == "__main__":
     method = 'svm'
@@ -103,4 +111,4 @@ if __name__ == "__main__":
     for i in range(10):
         print(f'------> i: {i} image_features.sum: {image_features.sum()}')
         model = train_iqa(image_features, y_train, method)
-        test_model(x_test, y_test, model, f'i_{run_note}')
+        test_model(x_test, y_test, model, f'{i}_{run_note}')
