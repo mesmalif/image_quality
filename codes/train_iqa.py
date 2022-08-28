@@ -51,7 +51,7 @@ def train_iqa(image_features, y, method='random_forest'):
     
     #Define the classifier
     if method=='random_forest':
-        model = RandomForestClassifier(n_estimators = 250, random_state = 42)
+        model = RandomForestClassifier(n_estimators = 50)
     elif method=='svm':
         model = svm.SVC(decision_function_shape='ovo')  #For multiclass classification
 
